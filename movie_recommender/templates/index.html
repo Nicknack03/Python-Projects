@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Match</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card">
+        <header>
+          <p class="eyebrow">Movie Match</p>
+          <h1>Find a movie that fits your vibe</h1>
+          <p class="subtext">
+            Pick a movie you already like and add a mood. We will suggest up to five
+            similar titles to watch next.
+          </p>
+        </header>
+
+        <form method="post" class="form">
+          <label for="favorite_movie">Your favorite movie</label>
+          <select id="favorite_movie" name="favorite_movie" required>
+            <option value="">Select a movie</option>
+            {% for movie in movies %}
+              <option
+                value="{{ movie.title }}"
+                {% if movie.title == selected_title %}selected{% endif %}
+              >
+                {{ movie.title }}
+              </option>
+            {% endfor %}
+          </select>
+
+          <label for="mood">Your mood (optional)</label>
+          <input
+            id="mood"
+            name="mood"
+            type="text"
+            placeholder="e.g. uplifting, suspenseful"
+            value="{{ mood }}"
+          />
+
+          <button type="submit">Get recommendations</button>
+        </form>
+      </section>
+
+      <section class="card results">
+        <h2>Recommendations</h2>
+        {% if recommendations %}
+          <ul>
+            {% for movie in recommendations %}
+              <li>
+                <div>
+                  <h3>{{ movie.title }}</h3>
+                  <p>Genres: {{ movie.genres | join(', ') }}</p>
+                  <p>Mood tags: {{ movie.mood_tags | join(', ') }}</p>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="empty">Make a selection to see recommendations.</p>
+        {% endif %}
+      </section>
+
+      <section class="card catalog">
+        <h2>Movie catalog</h2>
+        <div class="chips">
+          {% for movie in movies %}
+            <span class="chip">{{ movie.title }}</span>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
